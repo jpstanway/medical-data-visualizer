@@ -3,11 +3,23 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+def is_overweight(bmi_list):
+    result = []
+    for x in bmi_list:
+        if x > 25:
+            result.append(1)
+        else:
+            result.append(0)
+    return result
+
+
 # Import data
-df = None
+df = pd.read_csv('medical_examination.csv')
 
 # Add 'overweight' column
-df['overweight'] = None
+bmi = (df['weight'] / (df['height']**2) * 10000).tolist()
+df['overweight'] = is_overweight(bmi)
 
 # Normalize data by making 0 always good and 1 always bad. If the value of 'cholesterol' or 'gluc' is 1, make the value 0. If the value is more than 1, make the value 1.
 
