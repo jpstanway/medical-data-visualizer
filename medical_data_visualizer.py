@@ -22,6 +22,13 @@ bmi = (df['weight'] / (df['height']**2) * 10000).tolist()
 df['overweight'] = is_overweight(bmi)
 
 # Normalize data by making 0 always good and 1 always bad. If the value of 'cholesterol' or 'gluc' is 1, make the value 0. If the value is more than 1, make the value 1.
+df_normalized = df.copy()
+
+for col in df_normalized.columns:
+    if (col == 'cholesterol' or col == 'gluc'):
+        decimal = (df_normalized[col] - df_normalized[col].min()) / (
+            df_normalized[col].max() - df_normalized[col].min())
+        df_normalized[col] = round(decimal).astype(int)
 
 
 # Draw Categorical Plot
