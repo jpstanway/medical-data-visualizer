@@ -42,9 +42,10 @@ def draw_cat_plot():
     df_cat['total'] = 1
     df_cat = df_cat.groupby(
         ['cardio', 'variable', 'value'], as_index=False).count()
-
+    print(df_cat)
     # Draw the catplot with 'sns.catplot()'
-
+    fig = sns.catplot(x="variable", y="total", col="cardio",
+                      hue="value", kind="bar", data=df_cat)
     # Do not modify the next two lines
     fig.savefig('catplot.png')
     return fig
