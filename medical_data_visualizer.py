@@ -44,7 +44,7 @@ def draw_cat_plot():
         ['cardio', 'variable', 'value'], as_index=False).count()
     # Draw the catplot with 'sns.catplot()'
     fig = sns.catplot(x="variable", y="total", col="cardio",
-                      hue="value", kind="bar", data=df_cat)
+                      hue="value", kind="bar", data=df_cat).figure
     # Do not modify the next two lines
     fig.savefig('catplot.png')
     return fig
@@ -53,19 +53,26 @@ def draw_cat_plot():
 # Draw Heat Map
 def draw_heat_map():
     # Clean the data
-    df_heat = df_normalized.copy()
+    df_heat = df.loc[
+        (df['ap_lo'] <= df['ap_hi']) &
+        (df['height'] >= df['height'].quantile(0.025)) &
+        (df['height'] <= df['height'].quantile(0.975)) &
+        (df['weight'] >= df['weight'].quantile(0.025)) &
+        (df['weight'] <= df['weight'].quantile(0.975))
+    ]
 
     # Calculate the correlation matrix
-    corr = df_heat.corr()
+    corr = df_heat.corr(method="pearson")
 
     # Generate a mask for the upper triangle
-    mask = np.triu(np.ones_like(corr))
+    mask = np.triu(corr)
 
     # Set up the matplotlib figure
     fig, ax = plt.subplots(figsize=(12, 12))
 
     # Draw the heatmap with 'sns.heatmap()'
-    fig = sns.heatmap(corr, annot=True, mask=mask).figure
+    sns.heatmap(corr, ax=ax, annot=True, mask=mask, linewidths=1, vmin=-0.12, vmax=0.28,
+                fmt='.1f', center=0, cbar_kws={"ticks": [0.24, 0.16, 0.08, 0.00, -0.08], "shrink": 0.5})
     # Do not modify the next two lines
     fig.savefig('heatmap.png')
     return fig
